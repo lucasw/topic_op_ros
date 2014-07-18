@@ -21,9 +21,9 @@ class TopicOp:
         self.params = literal_eval(params)
         self.expr = expr
        
-        print self.params
+        #print self.params
         for var in self.params:
-            print var 
+            #print var 
             topic = self.params[var]
 
             #print i, topic
@@ -34,7 +34,7 @@ class TopicOp:
     def doOp(self):
         acc = 0
         thismodule = sys.modules[__name__]
-        print thismodule
+        #print thismodule
 
         # this doesn't work
         #ns = {'__builtins__': None}
@@ -47,10 +47,10 @@ class TopicOp:
                 return
             setattr(thismodule, self.var[key], self.data[key])
             
-            print key, self.var[key], '=', eval(self.var[key], ns)
+            #print key, self.var[key], '=', eval(self.var[key], ns)
         # eval is super unsafe, use something limited to math expressions
         # http://stackoverflow.com/questions/2371436/evaluating-a-mathematical-expression-in-a-string
-        print 'result ', eval(self.expr, ns)
+        print eval(self.expr, ns)
 
     def callback(self, msg):
         topic = msg._connection_header['topic']
