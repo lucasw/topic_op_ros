@@ -7,14 +7,20 @@
 import sys
 import rospy
 
+from ast import literal_eval
+
 # TBD have to import all message types with single data fields?
 from std_msgs.msg import Float32
 
 class TopicOp:
-    def __init__(self, topics):
+    def __init__(self, params, expr): # topics):
         self.subs = {}
         self.data = {}
-        for i, topic in enumerate(topics):
+        
+        print literal_eval(params)
+
+        if False:
+        #for i, topic in enumerate(topics):
             print i, topic
             self.subs[topic] = rospy.Subscriber(topic, Float32, self.callback)
             self.data[topic] = None
@@ -37,7 +43,13 @@ class TopicOp:
 
 if __name__ == '__main__':
     rospy.init_node('topic_op')
-    topic_op = TopicOp(sys.argv[1:])
+    if len(sys.argv) < 3:
+        print 'not enough parameters'
+        sys.exit(0)
+
+    params = sys.argv[1]
+    expr = sys.argv[2]
+    topic_op = TopicOp(params, expr)
 
     try:
         rospy.spin()
