@@ -16,27 +16,35 @@ class TopicOp:
     def __init__(self, params, expr): # topics):
         self.subs = {}
         self.data = {}
-        
-        print literal_eval(params)
+        self.var = {}
 
-        if False:
-        #for i, topic in enumerate(topics):
-            print i, topic
+        self.expr = expr
+        self.params = literal_eval(params)
+        for a in self.params:
+            topic = self.params[a]
+            #print type(a), topic 
+
+            #print i, topic
+            self.var[topic] = a
             self.subs[topic] = rospy.Subscriber(topic, Float32, self.callback)
             self.data[topic] = None
 
     def doOp(self):
         acc = 0
+        thismodule = sys.modules[__name__]
+
         for key in self.data:
             if self.data[key] is None:
-                continue
-                # or return
-            acc += self.data[key]
-        print 'result', acc
+                #continue
+                return
+            setattr(thismodule, self.var[key], self.data[key])
+            print thismodule, eval(self.var[key])
+        
+        print 'result ', eval(self.expr)
 
     def callback(self, msg):
         topic = msg._connection_header['topic']
-        print topic, msg.data
+        #print topic, msg.data
         self.data[topic] = msg.data
         
         self.doOp()
