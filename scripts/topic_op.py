@@ -4,6 +4,7 @@
 # July 2014
 # GPLv3
 
+import ast
 import sys
 import rospy
 
@@ -17,30 +18,39 @@ class TopicOp:
         self.subs = {}
         self.data = {}
         self.var = {}
-
-        self.expr = expr
         self.params = literal_eval(params)
-        for a in self.params:
-            topic = self.params[a]
-            #print type(a), topic 
+        self.expr = expr
+       
+        print self.params
+        for var in self.params:
+            print var 
+            topic = self.params[var]
 
             #print i, topic
-            self.var[topic] = a
+            self.var[topic] = var
             self.subs[topic] = rospy.Subscriber(topic, Float32, self.callback)
             self.data[topic] = None
 
     def doOp(self):
         acc = 0
         thismodule = sys.modules[__name__]
+        print thismodule
+
+        # this doesn't work
+        #ns = {'__builtins__': None}
+        # Not sure if this is any safer
+        ns = {'__builtins__': thismodule}
 
         for key in self.data:
             if self.data[key] is None:
                 #continue
                 return
             setattr(thismodule, self.var[key], self.data[key])
-            print thismodule, eval(self.var[key])
-        
-        print 'result ', eval(self.expr)
+            
+            print key, self.var[key], '=', eval(self.var[key], ns)
+        # eval is super unsafe, use something limited to math expressions
+        # http://stackoverflow.com/questions/2371436/evaluating-a-mathematical-expression-in-a-string
+        print 'result ', eval(self.expr, ns)
 
     def callback(self, msg):
         topic = msg._connection_header['topic']
