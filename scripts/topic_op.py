@@ -16,7 +16,7 @@ from std_msgs.msg import *
 #from std_msgs.msg import Float32
 
 class TopicOp:
-    def __init__(self, params, expr): # topics):
+    def __init__(self, params, expr, topic='/result'): 
         self.subs_pre = {}
         self.subs = {}
         self.data = {}
@@ -24,6 +24,9 @@ class TopicOp:
         self.params = literal_eval(params)
         self.expr = expr
        
+        # just assume Float64 for now
+        self.pub = rospy.Publisher(topic, Float64)
+         
         #print self.params
         for var in self.params:
             #print var 
@@ -54,7 +57,10 @@ class TopicOp:
             #print key, self.var[key], '=', eval(self.var[key], ns)
         # eval is super unsafe, use something limited to math expressions
         # http://stackoverflow.com/questions/2371436/evaluating-a-mathematical-expression-in-a-string
-        print eval(self.expr, ns)
+        result = eval(self.expr, ns)
+        msg = Float64()
+        msg.data = result
+        self.pub.publish(msg)
 
     def callbackPre(self, msg):
         msg_type = msg._connection_header['type']
@@ -71,17 +77,21 @@ class TopicOp:
             return
 
         topic = msg._connection_header['topic']
-        print 'topic and split', topic, msg_type_split
-        self.subs[topic] = rospy.Subscriber(topic, 
-                eval(msg_type_split[1]), self.callback)
+        atype = msg_type_split[1]
+        print 'topic and split', topic, atype 
+        # need to unregister first, otherwise get errors
         self.subs_pre[topic].unregister()
+        self.subs[topic] = rospy.Subscriber(topic, 
+                #Float32, 
+                eval(atype),
+                self.callback)
 
     def callback(self, msg):
-        print msg._connection_header['type']
+        #print msg._connection_header['type']
         topic = msg._connection_header['topic']
-        #print topic, msg.data
-        self.data[topic] = msg.data
+        #print topic, msg
         
+        self.data[topic] = msg.data
         self.doOp()
 
 if __name__ == '__main__':
@@ -92,7 +102,11 @@ if __name__ == '__main__':
 
     params = sys.argv[1]
     expr = sys.argv[2]
-    topic_op = TopicOp(params, expr)
+    if len(sys.argv) == 4:
+        topic = sys.argv[3]
+        topic_op = TopicOp(params, expr, topic)
+    else:
+        topic_op = TopicOp(params, expr)
 
     try:
         rospy.spin()
