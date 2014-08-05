@@ -5,12 +5,12 @@ from qt_gui.plugin import Plugin
 from python_qt_binding import loadUi
 from python_qt_binding.QtGui import QWidget
 
-class MyPlugin(Plugin):
+class TopicOp(Plugin):
 
     def __init__(self, context):
-        super(MyPlugin, self).__init__(context)
+        super(TopicOp, self).__init__(context)
         # Give QObjects reasonable names
-        self.setObjectName('MyPlugin')
+        self.setObjectName('TopicOp')
 
         # Process standalone plugin command-line arguments
         from argparse import ArgumentParser
@@ -28,11 +28,11 @@ class MyPlugin(Plugin):
         self._widget = QWidget()
         # Get path to UI file which is a sibling of this file
         # in this example the .ui and .py file are in the same folder
-        ui_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'MyPlugin.ui')
+        ui_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'TopicOp.ui')
         # Extend the widget with all attributes and children from UI file
         loadUi(ui_file, self._widget)
         # Give QObjects reasonable names
-        self._widget.setObjectName('MyPluginUi')
+        self._widget.setObjectName('TopicOpUi')
         # Show _widget.windowTitle on left-top of each plugin (when 
         # it's set in _widget). This is useful when you open multiple 
         # plugins at once. Also if you open multiple instances of your 

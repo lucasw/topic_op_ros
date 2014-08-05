@@ -123,7 +123,10 @@ include_directories(
 ## Mark executable scripts (Python etc.) for installation
 ## in contrast to setup.py, you can choose the destination
 install(PROGRAMS
-   scripts/rqt_topic_op
+   #scripts/topic_op_ros
+   #scripts/topic_op.py
+   #scripts/plot_xy.py
+   #scripts/derivative.py
    DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
