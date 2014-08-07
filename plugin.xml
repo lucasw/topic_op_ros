@@ -1,5 +1,5 @@
 <library path="src">
-  <class name="TopicOp" type="topic_op_ros.topic_op_ros.TopicOp" base_class_type="rqt_gui_py::Plugin">
+  <class name="Topic Op" type="topic_op_ros.topic_op_module.TopicOp" base_class_type="rqt_gui_py::Plugin">
     <description>
       An example Python GUI plugin to create a great user interface.
     </description>

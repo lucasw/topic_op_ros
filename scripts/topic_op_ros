@@ -2,7 +2,7 @@
 
 import sys
 
-from topic_op_ros.topic_op_ros import TopicOp
+from topic_op_ros.topic_op_module import TopicOp
 from rqt_gui.main import Main
 
 plugin = 'topic_op_ros'

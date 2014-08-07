@@ -7,6 +7,7 @@ project(topic_op_ros)
 find_package(catkin REQUIRED COMPONENTS
   rospy
   std_msgs
+  rqt_gui_py
 )
 
 ## System dependencies are found with CMake's conventions
